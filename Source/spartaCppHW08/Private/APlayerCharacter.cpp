@@ -4,6 +4,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "PlayerControllerBase.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 APlayerCharacter::APlayerCharacter()
@@ -12,6 +13,10 @@ APlayerCharacter::APlayerCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
+	
+	// 대신, 이동하려는 방향으로 캐릭터의 몸을 부드럽게 회전시킴
+	GetCharacterMovement()->bOrientRotationToMovement = true; 
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f); // 회전 속도 조정
 	
 	// 카메라 붐(셀카봉) 생성
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
