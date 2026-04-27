@@ -1,5 +1,6 @@
 ﻿#include "APlayerCharacter.h"
 
+#include "BaseWeapon.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "PlayerControllerBase.h"
@@ -33,6 +34,8 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	SpawnDefaultWeapon();
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -98,5 +101,26 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 	{
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void APlayerCharacter::SpawnDefaultWeapon()
+{
+	// WeaponClass가 에디터에서 할당되었는지 확인
+	if (WeaponClass)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;	// 무기의 Owner를 이 캐릭터로 설정
+		
+		// 무기 스폰
+		CurrentWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass, SpawnParams);
+		if (CurrentWeapon)
+		{
+			// 캐릭터 손 소켓에 부착
+			CurrentWeapon->AttachToComponent(
+				GetMesh(),
+				FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+				TEXT("weapon_attach_r"));	// 에디터에서 만든 소켓 이름과 일치해야 함
+		}
 	}
 }

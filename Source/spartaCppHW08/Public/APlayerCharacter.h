@@ -4,6 +4,7 @@
 #include "MyBaseCharacter.h"
 #include "APlayerCharacter.generated.h"
 
+class ABaseWeapon;
 struct FInputActionValue;
 class UCameraComponent;
 class USpringArmComponent;
@@ -17,6 +18,11 @@ public:
 	APlayerCharacter();
 	
 protected:
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	virtual void BeginPlay() override;
+	
+protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 	
@@ -28,9 +34,11 @@ protected:
 	UFUNCTION()
 	void Look(const FInputActionValue& Value);
 	
-protected:
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	TSubclassOf<ABaseWeapon> WeaponClass;
 	
-	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	TObjectPtr<ABaseWeapon> CurrentWeapon;
 	
+	void SpawnDefaultWeapon();
 };
