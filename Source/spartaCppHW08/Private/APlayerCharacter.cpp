@@ -65,6 +65,15 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 					this, 
 					&APlayerCharacter::Look);
 			}
+			
+			if (PC->FireAction)
+			{
+				EnhancedInputComponent->BindAction(
+					PC->FireAction,
+					ETriggerEvent::Triggered,
+					this,
+					&APlayerCharacter::Fire);
+			}
 		}
 		
 	}
@@ -101,6 +110,19 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 	{
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void APlayerCharacter::Fire(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Fire Input Pressed!")); // 로그 추가
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->Fire();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("CurrentWeapon is NULL!"));
 	}
 }
 
